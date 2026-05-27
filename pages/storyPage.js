@@ -1,3 +1,6 @@
+import { generateStory }
+from "../systems/worldSystem.js";
+
 export function renderStoryPage(){
 
 return `
@@ -5,36 +8,54 @@ return `
 <div class="card">
 
     <div class="title">
-        雨夜都市
+        AI世界
     </div>
 
     <div class="sub">
 
-        21:44 · 暴雨
+        动态AI剧情生成
 
     </div>
+
+    <div id="story-container">
+
+        正在生成剧情...
+
+    </div>
+
+    <button
+    class="button"
+    onclick="window.nextStory()">
+
+        下一段剧情
+
+    </button>
 
 </div>
 
-<div class="card">
+`;
 
-    <div class="story">
+}
 
-        <b>沈辞：</b>
+/* =========================
+加载剧情
+========================= */
 
-        “你终于来了。”
+export async function loadStory(){
 
-        <br><br>
+const container =
+document.getElementById(
+"story-container"
+);
 
-        <i>
-        空气里弥漫着潮湿气息。
-        </i>
+const story =
+await generateStory();
 
-        <br><br>
+container.innerHTML = `
 
-        桌上放着一份旧档案袋。
+<div class="story">
 
-    </div>
+${story}
 
 </div>
 
