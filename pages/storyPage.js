@@ -1,4 +1,9 @@
-import { generateStory }
+import {
+
+generateStory
+
+}
+
 from "../systems/worldSystem.js";
 
 export function renderStoryPage(){
@@ -7,39 +12,35 @@ return `
 
 <div class="card">
 
-    <div class="title">
-        AI世界
-    </div>
+<div class="title">
+AI世界
+</div>
 
-    <div class="sub">
+<div class="sub">
 
-        动态AI剧情生成
+动态AI剧情生成
 
-    </div>
+</div>
 
-    <div id="story-container">
+<div id="story-container">
 
-        正在生成剧情...
+正在生成剧情...
 
-    </div>
+</div>
 
-    <button
-    class="button"
-    onclick="window.nextStory()">
+<button
+class="button"
+onclick="window.nextStory()">
 
-        下一段剧情
+下一段剧情
 
-    </button>
+</button>
 
 </div>
 
 `;
 
 }
-
-/* =========================
-加载剧情
-========================= */
 
 export async function loadStory(){
 
