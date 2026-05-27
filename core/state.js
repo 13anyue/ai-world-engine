@@ -13,19 +13,11 @@ model:""
 world:{
 
 name:"",
-desc:"",
-time:"",
-weather:""
+desc:""
 
 },
 
-player:{
-
-name:"",
-money:0,
-inventory:[]
-
-},
+player:{},
 
 npcs:[],
 
