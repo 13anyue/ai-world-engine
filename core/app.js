@@ -2,6 +2,7 @@ const STORAGE_KEY = {
   API: 'awe-api', SETTINGS: 'awe-settings', MASKS: 'awe-masks', FORUM: 'awe-forum', LOCATIONS: 'awe-locations',
   SAVES: 'awe-saves', CHATS: 'awe-chats', APPS: 'awe-apps'
 };
+const BUILD_INFO = { version: '2026-05-27-2', note: 'runtime-hints-visible' };
 
 const state = {
   api: { endpoint: '', key: '', model: '', ok: false },
@@ -66,7 +67,7 @@ function runtimeHints() {
 const views = {
   home: () => {
     const rt = runtimeHints();
-    return `<section class='card'><h1>AI文游大厅</h1><p>先配API并测试，再创建世界进入文游。</p><div class='status-row'><span class='badge ${state.api.ok ? 'ok' : ''}'>API：${state.api.ok ? '已连通' : '未连通'}</span><span class='badge ${state.gameReady ? 'ok' : ''}'>世界：${state.gameReady ? '已创建' : '未创建'}</span></div><div class='grid2'>${action('api', 'API配置', '端点/密钥/模型')} ${action('create', '创建世界', '导入规则并生成')} ${action('profile', '个人与存档', '面具/存档管理')} ${action('story', '进入剧情', '需要API连通')}</div></section><section class='card'><h3>如何打开 UI</h3><p class='hint'>当前访问来源：<code>${escapeHtml(rt.origin)}</code></p>${rt.isFile ? "<p class='warn'>你现在是直接双击打开文件（file://），请先启动本地HTTP服务再访问。</p>" : ''}<ol class='steps'>${rt.tips.map(t => `<li>${t}</li>`).join('')}</ol></section>`;
+    return `<section class='card'><h1>AI文游大厅</h1><p>先配API并测试，再创建世界进入文游。</p><p class='build'>前端版本：<code>${BUILD_INFO.version}</code> · ${BUILD_INFO.note}</p><div class='status-row'><span class='badge ${state.api.ok ? 'ok' : ''}'>API：${state.api.ok ? '已连通' : '未连通'}</span><span class='badge ${state.gameReady ? 'ok' : ''}'>世界：${state.gameReady ? '已创建' : '未创建'}</span></div><div class='grid2'>${action('api', 'API配置', '端点/密钥/模型')} ${action('create', '创建世界', '导入规则并生成')} ${action('profile', '个人与存档', '面具/存档管理')} ${action('story', '进入剧情', '需要API连通')}</div></section><section class='card'><h3>如何打开 UI</h3><p class='hint'>当前访问来源：<code>${escapeHtml(rt.origin)}</code></p>${rt.isFile ? "<p class='warn'>你现在是直接双击打开文件（file://），请先启动本地HTTP服务再访问。</p>" : ''}<ol class='steps'>${rt.tips.map(t => `<li>${t}</li>`).join('')}</ol></section>`;
   },
   api: () => `<section class='card'><h2>API配置</h2><input id='ep' class='input' placeholder='API端点' value='${escapeHtml(state.api.endpoint)}'><input id='key' type='password' class='input' placeholder='API密钥' value='${escapeHtml(state.api.key)}'><input id='model' class='input' placeholder='模型别名' value='${escapeHtml(state.api.model)}'><button id='save-api' class='button'>保存配置</button><button id='test-api' class='button ghost'>测试连通</button><p class='hint'>状态：${state.api.ok ? '✅ 已连通' : '⚠️ 未验证'}</p></section>`,
   create: () => `<section class='card'><h2>创建/导入世界</h2><textarea id='rule' class='input' style='height:180px'>${escapeHtml(state.presetsRaw)}</textarea><button id='build-game' class='button'>生成游戏大厅</button></section>`,
