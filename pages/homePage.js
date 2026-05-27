@@ -4,23 +4,31 @@ return `
 
 <div class="card">
 
-    <div class="title">
-        AI互动文游平台
-    </div>
+<div class="title">
+AI互动文游平台
+</div>
 
-    <div class="sub">
+<div class="sub">
 
-        创建属于你的动态AI世界。
+创建属于你的动态AI世界。
 
-    </div>
+</div>
 
-    <button
-    class="button"
-    onclick="window.navigateToCreate()">
+<button
+class="button"
+onclick="window.navigateToCreate()">
 
-        创建游戏
+创建游戏
 
-    </button>
+</button>
+
+<button
+class="button"
+onclick="window.openAPI()">
+
+API配置
+
+</button>
 
 </div>
 
