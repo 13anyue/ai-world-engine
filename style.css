@@ -18,5 +18,6 @@ hr{border-color:#ffffff1a;margin:14px 0}
 .badge.ok{color:#bdf8cf;border-color:#53cb7b66;background:#1f7a3a33}
 .steps{padding-left:18px;color:var(--sub);line-height:1.8}
 code{background:#00000033;padding:2px 6px;border-radius:8px;border:1px solid var(--line)}
+.warn{color:#ffd3a3;background:#4b2d123d;border:1px solid #ffbf7a66;padding:8px 10px;border-radius:10px}
 .option[disabled]{opacity:.55;cursor:not-allowed}
 @media (max-width:720px){.grid2{grid-template-columns:1fr}#bottom-nav{grid-template-columns:repeat(3,1fr)}}
