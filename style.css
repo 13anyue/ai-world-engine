@@ -13,3 +13,10 @@
 .map{height:300px;border-radius:16px;background:linear-gradient(135deg,#2a3448,#192130);position:relative}.pin{position:absolute;transform:translate(-50%,-50%);background:#fff;color:#111;padding:3px 8px;border-radius:999px;font-size:12px}
 .chat-box{max-height:220px;overflow:auto;padding:8px;border:1px solid var(--line);border-radius:10px;background:#00000022}.chat-box p{margin:6px 0}.chat-box .me{text-align:right;color:#9bc1ff}.chat-box .npc{text-align:left;color:#e8eeff}
 hr{border-color:#ffffff1a;margin:14px 0}
+.status-row{display:flex;gap:8px;margin:8px 0 12px}
+.badge{padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:#ffffff10;color:var(--sub);font-size:12px}
+.badge.ok{color:#bdf8cf;border-color:#53cb7b66;background:#1f7a3a33}
+.steps{padding-left:18px;color:var(--sub);line-height:1.8}
+code{background:#00000033;padding:2px 6px;border-radius:8px;border:1px solid var(--line)}
+.option[disabled]{opacity:.55;cursor:not-allowed}
+@media (max-width:720px){.grid2{grid-template-columns:1fr}#bottom-nav{grid-template-columns:repeat(3,1fr)}}

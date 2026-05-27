@@ -6,7 +6,7 @@ const STORAGE_KEY = {
 const state = {
   api: { endpoint: '', key: '', model: '', ok: false },
   presetsRaw: '', settings: { style: '现代细腻', memory: true, holidays: ['新年', '中秋'] },
-  masks: [{ id: 1, name: '观察者', world: '霓虹雨城' }], activeMask: 1, page: 'home', gameReady: false,
+  masks: [{ id: 1, name: '观察者', world: '霓虹雨城' }], activeMask: 1, page: 'home', gameReady: false, storyLoading: false,
   npcs: [{ id: 1, name: '沈辞', mood: '审视', bg: '财团继承人', tags: ['高冷', '理性'] }, { id: 2, name: '林镜', mood: '愉悦', bg: '艺术生', tags: ['敏感', '偏执'] }],
   relationLinks: [{ from: '沈辞', to: '林镜', type: '竞争+旧识' }, { from: '沈辞', to: '沈家', type: '家族' }],
   locations: [{ name: '雾桥站', x: 28, y: 40, mood: '紧张', npcs: ['沈辞'] }],
@@ -50,10 +50,10 @@ function render() { page.innerHTML = (views[state.page] || views.home)(); render
 function renderNav() { nav.innerHTML = ['story', 'profile', 'relation', 'map', 'forum', 'settings'].map(t => `<button class="tab ${state.page === t ? 'active' : ''}" onclick="navigate('${t}')">${icon(t)}<span>${labels[t]}</span></button>`).join(''); }
 
 const views = {
-  home: () => `<section class='card'><h1>AI文游大厅</h1><p>先配API并测试，再创建世界进入文游。</p><div class='grid2'>${action('api', 'API配置', '端点/密钥/模型')} ${action('create', '创建世界', '导入规则并生成')} ${action('profile', '个人与存档', '面具/存档管理')} ${action('story', '进入剧情', '需要API连通')}</div></section>`,
+  home: () => `<section class='card'><h1>AI文游大厅</h1><p>先配API并测试，再创建世界进入文游。</p><div class='status-row'><span class='badge ${state.api.ok ? 'ok' : ''}'>API：${state.api.ok ? '已连通' : '未连通'}</span><span class='badge ${state.gameReady ? 'ok' : ''}'>世界：${state.gameReady ? '已创建' : '未创建'}</span></div><div class='grid2'>${action('api', 'API配置', '端点/密钥/模型')} ${action('create', '创建世界', '导入规则并生成')} ${action('profile', '个人与存档', '面具/存档管理')} ${action('story', '进入剧情', '需要API连通')}</div></section><section class='card'><h3>如何打开 UI</h3><ol class='steps'><li>在项目目录运行：<code>python -m http.server 5173</code></li><li>浏览器打开：<code>http://localhost:5173</code></li><li>如果端口占用，改成其它端口并同步修改URL。</li></ol></section>`,
   api: () => `<section class='card'><h2>API配置</h2><input id='ep' class='input' placeholder='API端点' value='${escapeHtml(state.api.endpoint)}'><input id='key' type='password' class='input' placeholder='API密钥' value='${escapeHtml(state.api.key)}'><input id='model' class='input' placeholder='模型别名' value='${escapeHtml(state.api.model)}'><button id='save-api' class='button'>保存配置</button><button id='test-api' class='button ghost'>测试连通</button><p class='hint'>状态：${state.api.ok ? '✅ 已连通' : '⚠️ 未验证'}</p></section>`,
   create: () => `<section class='card'><h2>创建/导入世界</h2><textarea id='rule' class='input' style='height:180px'>${escapeHtml(state.presetsRaw)}</textarea><button id='build-game' class='button'>生成游戏大厅</button></section>`,
-  story: () => !state.gameReady ? `<section class='card'><h2>尚未开始</h2><p>请先在API页完成连通，再在创建页生成世界。</p></section>` : `<section class='card'><h2>${state.story.title}</h2><div class='story'>${state.story.content}</div>${state.story.options.map((o, i) => `<button class='option' onclick='chooseOpt(${i})'>${i + 1}. ${o}</button>`).join('')}</section>`,
+  story: () => !state.gameReady ? `<section class='card'><h2>尚未开始</h2><p>请先在API页完成连通，再在创建页生成世界。</p></section>` : `<section class='card'><h2>${state.story.title}</h2><div class='story'>${state.story.content}</div>${state.storyLoading ? "<p class='hint'>剧情生成中，请稍候...</p>" : ''}${state.story.options.map((o, i) => `<button class='option' ${state.storyLoading ? 'disabled' : ''} onclick='chooseOpt(${i})'>${i + 1}. ${o}</button>`).join('')}</section>`,
   profile: () => `<section class='card'><h2>个人中心 / 面具 / 存档</h2><p>当前面具：${state.masks.find(m => m.id === state.activeMask)?.name || '未选择'}</p><div class='chips'>${state.masks.map(m => `<button class='chip' onclick='switchMask(${m.id})'>${m.name} · ${m.world}</button>`).join('')}</div><button id='add-mask' class='button ghost'>新增面具角色</button><hr><h3>存档系统</h3><input id='save-name' class='input' placeholder='存档名称'><button id='create-save' class='button'>新建存档</button><div>${state.saves.map(s => `<div class='list'><b>${s.name}</b><p>${s.time}</p><button class='mini' onclick='loadSave(${s.id})'>读取</button> <button class='mini' onclick='deleteSave(${s.id})'>删除</button></div>`).join('')}</div><button id='export-save' class='button ghost'>导出当前状态JSON</button><textarea id='import-json' class='input' placeholder='粘贴JSON导入存档'></textarea><button id='import-save' class='button ghost'>导入并覆盖当前</button></section>`,
   relation: () => `<section class='card'><h2>关系表 + 家族树</h2>${state.npcs.map(n => `<div class='list'><b>${n.name}</b>｜${n.bg}｜心情:${n.mood}<br>标签：${n.tags.join(' / ')}<br><button class='mini' onclick="npcInteract('${n.name}')">交互</button> <button class='mini' onclick="openPhone('${n.name}')">NPC手机</button></div>`).join('')}<h3>关系圈</h3>${state.relationLinks.map(r => `<div class='list'>${r.from} → ${r.to}（${r.type}）</div>`).join('')}</section>`,
   map: () => `<section class='card'><h2>地图</h2><p>点击空白地图新增地点；或一键AI生成5个地点。</p><button id='gen-places' class='button ghost'>AI生成5个地点</button><div id='map' class='map'>${state.locations.map(l => `<span class='pin' data-pin='1' style='left:${l.x}%;top:${l.y}%' title='${l.name}'>${l.name}</span>`).join('')}</div></section>`,
@@ -101,8 +101,10 @@ function importSave() { try { const raw = val('import-json'); const obj = JSON.p
 
 window.chooseOpt = async (i) => {
   const option = state.story.options[i];
-  if (!option) return;
+  if (!option || state.storyLoading) return;
   if (!state.api.ok) return alert('请先在API页测试连通后再推进剧情');
+  state.storyLoading = true;
+  render();
   try {
     const next = await generateStory(option);
     state.story = next;
@@ -111,6 +113,9 @@ window.chooseOpt = async (i) => {
   } catch (e) {
     console.warn(e);
     alert('剧情生成失败，请检查API配置或稍后重试');
+  } finally {
+    state.storyLoading = false;
+    render();
   }
 };
 window.switchMask = (id) => { state.activeMask = id; persist(); render(); };
