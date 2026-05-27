@@ -1,10 +1,17 @@
+
 import { renderHomePage }
 from "../pages/homePage.js";
 
 import { renderCreatePage }
 from "../pages/createPage.js";
 
-import { renderStoryPage }
+import {
+
+renderStoryPage,
+loadStory
+
+}
+
 from "../pages/storyPage.js";
 
 const pageContainer =
@@ -32,6 +39,12 @@ case "story":
 
 pageContainer.innerHTML =
 renderStoryPage();
+
+setTimeout(()=>{
+
+loadStory();
+
+},100);
 
 break;
 
