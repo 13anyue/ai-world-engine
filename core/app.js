@@ -7,4 +7,10 @@ navigate("create");
 
 };
 
+window.enterStory = ()=>{
+
+navigate("story");
+
+};
+
 navigate("home");
