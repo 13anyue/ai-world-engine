@@ -99,11 +99,65 @@ window.deleteSave = (id) => { state.saves = state.saves.filter(s => s.id !== id)
 function exportSave() { const text = JSON.stringify({ state }, null, 2); navigator.clipboard?.writeText(text); alert('已复制当前状态JSON到剪贴板'); }
 function importSave() { try { const raw = val('import-json'); const obj = JSON.parse(raw); if (!obj.state) throw new Error(); Object.assign(state, obj.state); persist(); render(); } catch { alert('JSON格式错误'); } }
 
-window.chooseOpt = (i) => alert(`你选择了：${state.story.options[i]}`);
+window.chooseOpt = async (i) => {
+  const option = state.story.options[i];
+  if (!option) return;
+  if (!state.api.ok) return alert('请先在API页测试连通后再推进剧情');
+  try {
+    const next = await generateStory(option);
+    state.story = next;
+    persist();
+    render();
+  } catch (e) {
+    console.warn(e);
+    alert('剧情生成失败，请检查API配置或稍后重试');
+  }
+};
 window.switchMask = (id) => { state.activeMask = id; persist(); render(); };
 window.npcInteract = (name) => alert(`${name}回应：已收到你的交互请求，关系变化将同步到剧情与地图。`);
 window.openPhone = (name) => { state.phoneNpc = name; state.appQuery = ''; navigate('phone'); };
 function sendChat() { const npc = state.phoneNpc; if (!npc) return; const msg = val('chat-input'); if (!msg) return; state.chats[npc] ||= []; state.chats[npc].push({ me: true, text: msg }, { me: false, text: `已收到：${msg}。我会留意。` }); persist(); render(); }
+
+
+async function generateStory(choice) {
+  const payload = {
+    model: state.api.model,
+    messages: [{ role: 'user', content: `当前标题：${state.story.title}
+当前剧情：${state.story.content.replace(/<[^>]+>/g, ' ')}
+玩家选择：${choice}
+请续写下一幕，返回JSON：{"title":"","content":"","options":["","",""]}` }],
+    temperature: 0.8,
+    max_tokens: 500
+  };
+  const resp = await fetch(state.api.endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${state.api.key}` },
+    body: JSON.stringify(payload)
+  });
+  if (!resp.ok) throw new Error(`story api failed: ${resp.status}`);
+  const data = await resp.json();
+  const raw = data?.choices?.[0]?.message?.content || data?.output_text || '';
+  const parsed = parseStoryResponse(raw);
+  return {
+    title: parsed.title || `下一幕：${choice}`,
+    content: (parsed.content || String(raw || '').trim() || `你选择了“${choice}”，但剧情引擎没有返回有效内容。`).replaceAll('\n', '<br>'),
+    options: Array.isArray(parsed.options) && parsed.options.length ? parsed.options.slice(0, 4) : ['继续追问', '暂时观察', '转换话题']
+  };
+}
+
+function parseStoryResponse(raw) {
+  if (!raw) return {};
+  const text = String(raw).trim();
+  const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  const jsonText = (fence?.[1] || text).trim();
+  try { return JSON.parse(jsonText); } catch {}
+  const start = text.indexOf('{');
+  const end = text.lastIndexOf('}');
+  if (start >= 0 && end > start) {
+    try { return JSON.parse(text.slice(start, end + 1)); } catch {}
+  }
+  return { content: text };
+}
 
 async function loadPreset() { try { state.presetsRaw = (await fetch('./presets/default-prompt.txt').then(r => r.text())).trim(); } catch { state.presetsRaw = '你是剧情引擎...'; } }
 
