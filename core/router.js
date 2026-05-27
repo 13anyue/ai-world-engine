@@ -1,5 +1,13 @@
 import {
 
+renderRelationPage
+
+}
+
+from "../pages/relationPage.js";
+
+import {
+
 renderHomePage
 
 }
