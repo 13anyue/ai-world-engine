@@ -1,8 +1,17 @@
+import {
 
-import { renderHomePage }
+renderHomePage
+
+}
+
 from "../pages/homePage.js";
 
-import { renderCreatePage }
+import {
+
+renderCreatePage
+
+}
+
 from "../pages/createPage.js";
 
 import {
@@ -14,8 +23,18 @@ loadStory
 
 from "../pages/storyPage.js";
 
+import {
+
+renderApiPage
+
+}
+
+from "../pages/apiPage.js";
+
 const pageContainer =
-document.getElementById("page-container");
+document.getElementById(
+"page-container"
+);
 
 export function navigate(page){
 
@@ -45,6 +64,13 @@ setTimeout(()=>{
 loadStory();
 
 },100);
+
+break;
+
+case "api":
+
+pageContainer.innerHTML =
+renderApiPage();
 
 break;
 
