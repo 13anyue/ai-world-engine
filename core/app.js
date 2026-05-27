@@ -1,96 +1,23 @@
-import { navigate }
-from "./router.js";
+import { navigate } from './router.js';
+import { GAME_STATE, loadState, saveState } from './state.js';
+import { renderGameTab, runApiTest, startGameFromSetup, applyChoice, createMapPoint, addForumPost, sendChat, saveArchive, loadArchive, resetGame } from '../pages/storyPage.js';
+import { saveApiConfig } from '../pages/apiPage.js';
+import { addMask, switchTheme } from '../pages/profilePage.js';
 
-import {
+loadState();
+navigate(GAME_STATE.route || 'home');
 
-createNPC
-
-}
-
-from "../systems/npcSystem.js";
-
-import {
-
-saveAPIData
-
-}
-
-from "../pages/apiPage.js";
-
-import {
-
-loadStory
-
-}
-
-from "../pages/storyPage.js";
-
-window.navigateToCreate = ()=>{
-
-navigate("create");
-
-};
-
-window.enterStory = ()=>{
-
-navigate("story");
-
-};
-
-window.openAPI = ()=>{
-
-navigate("api");
-
-};
-
-window.saveAPI = ()=>{
-
-saveAPIData();
-
-};
-
-window.nextStory = ()=>{
-
-loadStory();
-
-};
-
-window.openRelation = ()=>{
-
-navigate("relation");
-
-};
-
-createNPC({
-
-name:"沈辞",
-
-age:24,
-
-gender:"男",
-
-personality:"冷淡腹黑",
-
-occupation:"财团继承人",
-
-mood:"复杂"
-
-});
-
-createNPC({
-
-name:"林镜",
-
-age:22,
-
-gender:"女",
-
-personality:"病娇",
-
-occupation:"艺术学院学生",
-
-mood:"愉悦"
-
-});
-
-navigate("home");
+window.go = (route) => { GAME_STATE.route = route; saveState(); navigate(route); };
+window.saveApi = () => saveApiConfig();
+window.testApi = () => runApiTest();
+window.startGame = () => startGameFromSetup();
+window.switchGameTab = (tab) => renderGameTab(tab);
+window.pickChoice = (i) => applyChoice(i);
+window.mapClick = (e) => createMapPoint(e);
+window.publishPost = () => addForumPost();
+window.sendChatMessage = () => sendChat();
+window.saveArchive = () => saveArchive();
+window.loadArchive = () => loadArchive();
+window.resetGame = () => resetGame();
+window.addMask = () => addMask();
+window.switchTheme = (v) => switchTheme(v);

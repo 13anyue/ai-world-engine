@@ -225,3 +225,7 @@ rgba(92,126,255,.35);
 transform:scale(.98);
 
 }
+
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+body[data-theme='rose']{--accent:#e78db7;--panel:#fff7fc;--panel2:#fff;--text:#4d2b41;--sub:#8a5e77;--line:rgba(214,116,166,.2);background:linear-gradient(180deg,#ffeef7,#fde5f2)}
+body[data-theme='night']{--accent:#7aa2ff}
