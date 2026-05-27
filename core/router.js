@@ -82,6 +82,13 @@ renderApiPage();
 
 break;
 
+case "relation":
+
+pageContainer.innerHTML =
+renderRelationPage();
+
+break;
+    
 }
 
 }
