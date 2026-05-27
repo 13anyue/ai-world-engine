@@ -1,94 +1,18 @@
-import {
+import { renderHomePage } from '../pages/homePage.js';
+import { renderApiPage } from '../pages/apiPage.js';
+import { renderCreatePage } from '../pages/createPage.js';
+import { renderGameHallPage } from '../pages/storyPage.js';
+import { renderProfilePage } from '../pages/profilePage.js';
 
-renderRelationPage
+const pageContainer = document.getElementById('page-container');
 
-}
-
-from "../pages/relationPage.js";
-
-import {
-
-renderHomePage
-
-}
-
-from "../pages/homePage.js";
-
-import {
-
-renderCreatePage
-
-}
-
-from "../pages/createPage.js";
-
-import {
-
-renderStoryPage,
-loadStory
-
-}
-
-from "../pages/storyPage.js";
-
-import {
-
-renderApiPage
-
-}
-
-from "../pages/apiPage.js";
-
-const pageContainer =
-document.getElementById(
-"page-container"
-);
-
-export function navigate(page){
-
-switch(page){
-
-case "home":
-
-pageContainer.innerHTML =
-renderHomePage();
-
-break;
-
-case "create":
-
-pageContainer.innerHTML =
-renderCreatePage();
-
-break;
-
-case "story":
-
-pageContainer.innerHTML =
-renderStoryPage();
-
-setTimeout(()=>{
-
-loadStory();
-
-},100);
-
-break;
-
-case "api":
-
-pageContainer.innerHTML =
-renderApiPage();
-
-break;
-
-case "relation":
-
-pageContainer.innerHTML =
-renderRelationPage();
-
-break;
-    
-}
-
+export function navigate(route) {
+  const views = {
+    home: renderHomePage,
+    api: renderApiPage,
+    create: renderCreatePage,
+    hall: renderGameHallPage,
+    profile: renderProfilePage
+  };
+  pageContainer.innerHTML = (views[route] || renderHomePage)();
 }
