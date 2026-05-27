@@ -30,6 +30,14 @@ API配置
 
 </button>
 
+<button
+class="button"
+onclick="window.openRelation()">
+
+人物关系
+
+</button>
+
 </div>
 
 `;
